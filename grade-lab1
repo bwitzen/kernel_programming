@@ -1,0 +1,20 @@
+#!/usr/bin/env python
+
+from gradelib import *
+
+r = Runner(save("jos.out"),
+           stop_breakpoint("readline"))
+
+@test(0, "running JOS")
+def test_jos():
+    r.run_qemu()
+
+@test(10, "Physical page allocator", parent=test_jos)
+def test_check_page_alloc():
+    r.match(r"\[4K\] check_page_alloc\(\) succeeded!")
+
+@test(10, "Physical page allocator - ALLOC_HUGE", parent=test_jos)
+def test_check_huge_page_alloc():
+    r.match(r"\[4M\] check_page_alloc\(\) succeeded!")
+
+run_tests()
